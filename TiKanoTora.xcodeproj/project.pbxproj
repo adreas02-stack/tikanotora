@@ -10,21 +10,29 @@
 		AAAAAAAAAAAAAAAAAAAAAA01 /* TiKanoToraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA11 /* TiKanoToraApp.swift */; };
 		AAAAAAAAAAAAAAAAAAAAAA02 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA12 /* ContentView.swift */; };
 		AAAAAAAAAAAAAAAAAAAAAA03 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA13 /* Categories.swift */; };
-		AAAAAAAAAAAAAAAAAAAAAA04 /* FormUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA14 /* FormUploader.swift */; };
 		AAAAAAAAAAAAAAAAAAAAAA05 /* LogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA15 /* LogStore.swift */; };
 		AAAAAAAAAAAAAAAAAAAAAA06 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA16 /* NotificationManager.swift */; };
 		AAAAAAAAAAAAAAAAAAAAAA07 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA17 /* Settings.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB01 /* CategoriesManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB11 /* CategoriesManagementView.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB02 /* QuickLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB12 /* QuickLog.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB03 /* RadarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB13 /* RadarChartView.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB04 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB14 /* StatsView.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB05 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB15 /* PDFExporter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AAAAAAAAAAAAAAAAAAAAAA11 /* TiKanoToraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiKanoToraApp.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA12 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA13 /* Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Categories.swift; sourceTree = "<group>"; };
-		AAAAAAAAAAAAAAAAAAAAAA14 /* FormUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormUploader.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA15 /* LogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogStore.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA16 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA17 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		AAAAAAAAAAAAAAAAAAAAAA18 /* TiKanoTora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TiKanoTora.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBBBBBBBBBBBBBBBBBBBBB11 /* CategoriesManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesManagementView.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB12 /* QuickLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLog.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB13 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB14 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB15 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,9 +52,13 @@
 				AAAAAAAAAAAAAAAAAAAAAA11 /* TiKanoToraApp.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA12 /* ContentView.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA13 /* Categories.swift */,
-				AAAAAAAAAAAAAAAAAAAAAA14 /* FormUploader.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB11 /* CategoriesManagementView.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA15 /* LogStore.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA16 /* NotificationManager.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB12 /* QuickLog.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB13 /* RadarChartView.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB14 /* StatsView.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB15 /* PDFExporter.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA17 /* Settings.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA23 /* Products */,
 			);
@@ -131,9 +143,13 @@
 				AAAAAAAAAAAAAAAAAAAAAA01 /* TiKanoToraApp.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA02 /* ContentView.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA03 /* Categories.swift in Sources */,
-				AAAAAAAAAAAAAAAAAAAAAA04 /* FormUploader.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB01 /* CategoriesManagementView.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA05 /* LogStore.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA06 /* NotificationManager.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB02 /* QuickLog.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB03 /* RadarChartView.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB04 /* StatsView.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB05 /* PDFExporter.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA07 /* Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
