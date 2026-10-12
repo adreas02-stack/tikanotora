@@ -1,39 +1,49 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var quickLog: QuickLog
+
     var body: some View {
         TabView {
             LogNowView()
                 .tabItem { Label("Τώρα", systemImage: "hand.tap.fill") }
             TodayView()
                 .tabItem { Label("Σήμερα", systemImage: "chart.bar.fill") }
+            StatsView()
+                .tabItem { Label("Στατιστικά", systemImage: "chart.line.uptrend.xyaxis") }
+            CategoriesManagementView()
+                .tabItem { Label("Κατηγορίες", systemImage: "tag.fill") }
             SettingsView()
                 .tabItem { Label("Ρυθμίσεις", systemImage: "gearshape.fill") }
+        }
+        .sheet(isPresented: $quickLog.isPresented) {
+            QuickLogSheet()
+                .onDisappear { quickLog.pendingCategoryID = nil }
         }
     }
 }
 
-// MARK: - Καταγραφή με το χέρι
+// MARK: - Καταγραφή με το χέρι (κατηγορία -> υποκατηγορία)
 
 struct LogNowView: View {
     @EnvironmentObject var store: LogStore
+    @EnvironmentObject var categoryStore: CategoryStore
     @State private var lastLogged: String?
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(Catalog.all) { cat in
-                    Section {
-                        ForEach(cat.subcategories, id: \.self) { sub in
-                            Button(sub) {
-                                Task {
-                                    await store.add(category: cat.name, subcategory: sub)
-                                    lastLogged = "\(cat.name) · \(sub)"
-                                }
+                ForEach(categoryStore.categories) { cat in
+                    NavigationLink {
+                        SubcategoryPickerView(category: cat) { sub in
+                            Task {
+                                await store.add(category: cat.name, subcategory: sub)
+                                lastLogged = "\(cat.name) · \(sub)"
                             }
                         }
-                    } header: {
+                    } label: {
                         Label(cat.name, systemImage: cat.icon)
+                            .padding(.vertical, 4)
                     }
                 }
             }
@@ -46,6 +56,34 @@ struct LogNowView: View {
                 Text(lastLogged ?? "")
             }
         }
+    }
+}
+
+/// Λίστα με τις υποκατηγορίες μιας κατηγορίας — εμφανίζεται όταν πατάς την κατηγορία.
+struct SubcategoryPickerView: View {
+    let category: Category
+    let onPick: (String) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        List {
+            if category.subcategories.isEmpty {
+                Text("Δεν έχει υποκατηγορίες ακόμα. Πρόσθεσε στην καρτέλα «Κατηγορίες».")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(category.subcategories, id: \.self) { sub in
+                    Button {
+                        onPick(sub)
+                        dismiss()
+                    } label: {
+                        Text(sub)
+                            .font(.title3)
+                            .padding(.vertical, 6)
+                    }
+                }
+            }
+        }
+        .navigationTitle(category.name)
     }
 }
 
@@ -95,10 +133,6 @@ struct TodayView: View {
                                     .foregroundStyle(.secondary)
                                 Text("\(e.category) · \(e.subcategory)")
                                 Spacer()
-                                if !e.synced {
-                                    Image(systemName: "icloud.slash")
-                                        .foregroundStyle(.orange)
-                                }
                             }
                         }
                         .onDelete { offsets in
@@ -115,14 +149,9 @@ struct TodayView: View {
 // MARK: - Ρυθμίσεις
 
 struct SettingsView: View {
-    @EnvironmentObject var store: LogStore
-
     @AppStorage("enabled") private var enabled = true
     @AppStorage("startHour") private var startHour = 10
     @AppStorage("endHour") private var endHour = 23
-
-    @State private var prefilledLink = ""
-    @State private var formStatus = Settings.isFormConfigured ? "Συνδεδεμένο ✅" : "Δεν έχει συνδεθεί"
 
     var body: some View {
         NavigationStack {
@@ -137,25 +166,13 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    TextField("Επικόλλησε τον προσυμπληρωμένο σύνδεσμο", text: $prefilledLink, axis: .vertical)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                    Button("Σύνδεση") {
-                        formStatus = Settings.configure(fromPrefilled: prefilledLink)
-                            ? "Συνδεδεμένο ✅"
-                            : "Λάθος σύνδεσμος ❌ (χρειάζονται 3 ερωτήσεις)"
-                        Task { await store.syncPending() }
+                    Button("😴 Σταμάτα τις ειδοποιήσεις για 25′ (power nap)") {
+                        NotificationManager.shared.snooze()
                     }
-                    Text(formStatus).foregroundStyle(.secondary)
                 } header: {
-                    Text("Google Sheet")
-                }
-
-                Section("Συγχρονισμός") {
-                    Text("Σε αναμονή: \(store.unsyncedCount)")
-                    Button("Στείλε τώρα") {
-                        Task { await store.syncPending() }
-                    }
+                    Text("Λειτουργία ύπνου")
+                } footer: {
+                    Text("Σταματάει τις ειδοποιήσεις για 25 λεπτά και μετά ξαναρχίζουν κανονικά.")
                 }
             }
             .navigationTitle("Ρυθμίσεις")
