@@ -17,44 +17,9 @@ enum Settings {
         set { d.set(newValue, forKey: "endHour") }
     }
 
-    static var formURL: String {
-        get { d.string(forKey: "formURL") ?? "" }
-        set { d.set(newValue, forKey: "formURL") }
-    }
-    static var entryCategory: String {
-        get { d.string(forKey: "entryCategory") ?? "" }
-        set { d.set(newValue, forKey: "entryCategory") }
-    }
-    static var entrySub: String {
-        get { d.string(forKey: "entrySub") ?? "" }
-        set { d.set(newValue, forKey: "entrySub") }
-    }
-    static var entryTime: String {
-        get { d.string(forKey: "entryTime") ?? "" }
-        set { d.set(newValue, forKey: "entryTime") }
-    }
-
-    static var isFormConfigured: Bool {
-        !formURL.isEmpty && !entryCategory.isEmpty && !entrySub.isEmpty && !entryTime.isEmpty
-    }
-
-    /// Παίρνει τον «προσυμπληρωμένο σύνδεσμο» του Google Form και βγάζει μόνη της
-    /// τη διεύθυνση αποστολής και τα entry IDs (με τη σειρά: Κατηγορία, Υποκατηγορία, Ώρα).
-    static func configure(fromPrefilled link: String) -> Bool {
-        let clean = link.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard var comps = URLComponents(string: clean),
-              comps.path.hasSuffix("/viewform") else { return false }
-        let ids = (comps.queryItems ?? []).map(\.name).filter { $0.hasPrefix("entry.") }
-        guard ids.count >= 3 else { return false }
-
-        comps.path = String(comps.path.dropLast("viewform".count)) + "formResponse"
-        comps.query = nil
-        guard let url = comps.url else { return false }
-
-        formURL = url.absoluteString
-        entryCategory = ids[0]
-        entrySub = ids[1]
-        entryTime = ids[2]
-        return true
+    /// Μέχρι πότε είμαστε σε «λειτουργία ύπνου» (power nap) — nil όταν δεν είναι ενεργή.
+    static var snoozeUntil: Date? {
+        get { d.object(forKey: "snoozeUntil") as? Date }
+        set { d.set(newValue, forKey: "snoozeUntil") }
     }
 }
