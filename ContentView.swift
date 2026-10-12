@@ -159,9 +159,9 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Ρυθμίσεις")
-            .onChange(of: enabled) { NotificationManager.shared.schedule() }
-            .onChange(of: startHour) { NotificationManager.shared.schedule() }
-            .onChange(of: endHour) { NotificationManager.shared.schedule() }
+            .onChange(of: enabled) { _ in NotificationManager.shared.schedule() }
+            .onChange(of: startHour) { _ in NotificationManager.shared.schedule() }
+            .onChange(of: endHour) { _ in NotificationManager.shared.schedule() }
         }
     }
 }
