@@ -1,0 +1,37 @@
+name: Build unsigned IPA
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Archive (unsigned)
+        run: |
+          xcodebuild archive \
+            -project TiKanoTora.xcodeproj \
+            -scheme TiKanoTora \
+            -archivePath $PWD/build/TiKanoTora.xcarchive \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package IPA
+        run: |
+          cd build/TiKanoTora.xcarchive/Products
+          mv Applications Payload
+          zip -r TiKanoTora.ipa Payload
+          mv TiKanoTora.ipa "$GITHUB_WORKSPACE/TiKanoTora.ipa"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TiKanoTora-ipa
+          path: TiKanoTora.ipa
