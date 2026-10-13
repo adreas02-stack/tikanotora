@@ -42,8 +42,13 @@ struct LogNowView: View {
                             }
                         }
                     } label: {
-                        Label(cat.name, systemImage: cat.icon)
-                            .padding(.vertical, 4)
+                        Label {
+                            Text(cat.name)
+                        } icon: {
+                            Image(systemName: cat.icon)
+                                .foregroundStyle(cat.color)
+                        }
+                        .padding(.vertical, 4)
                     }
                 }
             }
@@ -64,6 +69,8 @@ struct SubcategoryPickerView: View {
     let category: Category
     let onPick: (String) -> Void
     @Environment(\.dismiss) private var dismiss
+    @State private var customText = ""
+    @State private var showCustom = false
 
     var body: some View {
         List {
@@ -82,66 +89,176 @@ struct SubcategoryPickerView: View {
                     }
                 }
             }
+
+            Section {
+                if showCustom {
+                    HStack {
+                        TextField("Τι έκανες;", text: $customText)
+                        Button("OK") {
+                            let t = customText.trimmingCharacters(in: .whitespacesAndNewlines)
+                            guard !t.isEmpty else { return }
+                            onPick(t)
+                            dismiss()
+                        }
+                    }
+                } else {
+                    Button("✏️ Κάτι άλλο...") { showCustom = true }
+                }
+            }
         }
         .navigationTitle(category.name)
     }
 }
 
-// MARK: - Σημερινά στατιστικά
+// MARK: - Σήμερα (πλοήγηση σε ημέρες, χρονοδιάγραμμα, πρόοδος, επεξεργάσιμο ιστορικό)
 
 struct TodayView: View {
     @EnvironmentObject var store: LogStore
+    @EnvironmentObject var categoryStore: CategoryStore
+    @State private var selectedDay = Date()
+    @State private var editingID: UUID?
+    @State private var showingNewEntry = false
 
-    private var today: [LogEntry] {
-        store.entries
-            .filter { Calendar.current.isDateInToday($0.date) }
-            .sorted { $0.date > $1.date }
+    private var dayEntries: [LogEntry] {
+        store.entries(on: selectedDay)
     }
 
-    /// Κάθε καταγραφή = 15 λεπτά.
+    private var answeredEntries: [LogEntry] { dayEntries.filter { !$0.isGap } }
+    private var gapCount: Int { dayEntries.filter(\.isGap).count }
+
     private var totals: [(name: String, minutes: Int)] {
-        Dictionary(grouping: today) { "\($0.category) · \($0.subcategory)" }
+        Dictionary(grouping: answeredEntries) { "\($0.category) · \($0.subcategory)" }
             .map { (name: $0.key, minutes: $0.value.count * 15) }
             .sorted { $0.minutes > $1.minutes }
+    }
+
+    private var progress: Double {
+        let total = dayEntries.count
+        guard total > 0 else { return 0 }
+        return Double(answeredEntries.count) / Double(total)
     }
 
     private func format(_ m: Int) -> String {
         m >= 60 ? "\(m / 60)ω \(m % 60)'" : "\(m)'"
     }
 
+    private var dayLabel: String {
+        if Calendar.current.isDateInToday(selectedDay) { return "Σήμερα" }
+        if Calendar.current.isDateInYesterday(selectedDay) { return "Χθες" }
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "el_GR")
+        f.dateFormat = "EEEE d MMMM"
+        return f.string(from: selectedDay)
+    }
+
     var body: some View {
         NavigationStack {
             List {
-                if today.isEmpty {
-                    Text("Καμία καταγραφή σήμερα ακόμα.")
+                Section {
+                    HStack {
+                        Button {
+                            selectedDay = Calendar.current.date(byAdding: .day, value: -1, to: selectedDay) ?? selectedDay
+                        } label: { Image(systemName: "chevron.left") }
+
+                        Spacer()
+                        VStack {
+                            Text(dayLabel).font(.headline)
+                            DatePicker("", selection: $selectedDay, displayedComponents: .date)
+                                .labelsHidden()
+                        }
+                        Spacer()
+
+                        Button {
+                            selectedDay = Calendar.current.date(byAdding: .day, value: 1, to: selectedDay) ?? selectedDay
+                        } label: { Image(systemName: "chevron.right") }
+                        .disabled(Calendar.current.isDateInToday(selectedDay))
+                    }
+
+                    if !dayEntries.isEmpty {
+                        DayTimelineView(day: selectedDay, entries: dayEntries)
+                        ProgressView(value: progress) {
+                            Text(gapCount > 0
+                                 ? "\(answeredEntries.count)/\(dayEntries.count) απαντημένα — \(gapCount) κενά"
+                                 : "Όλα απαντημένα ✅")
+                                .font(.caption)
+                        }
+                    }
+                }
+
+                if dayEntries.isEmpty {
+                    Text("Καμία καταγραφή αυτή τη μέρα.")
                         .foregroundStyle(.secondary)
                 } else {
-                    Section("Σύνολα") {
-                        ForEach(totals, id: \.name) { row in
-                            HStack {
-                                Text(row.name)
-                                Spacer()
-                                Text(format(row.minutes)).bold()
+                    if !totals.isEmpty {
+                        Section("Σύνολα") {
+                            ForEach(totals, id: \.name) { row in
+                                HStack {
+                                    Text(row.name)
+                                    Spacer()
+                                    Text(format(row.minutes)).bold()
+                                }
                             }
                         }
                     }
                     Section("Ιστορικό") {
-                        ForEach(today) { e in
-                            HStack {
-                                Text(e.date, format: .dateTime.hour().minute())
-                                    .monospacedDigit()
-                                    .foregroundStyle(.secondary)
-                                Text("\(e.category) · \(e.subcategory)")
-                                Spacer()
+                        ForEach(dayEntries) { e in
+                            Button {
+                                editingID = e.id
+                            } label: {
+                                HStack {
+                                    Text(e.date, format: .dateTime.hour().minute())
+                                        .monospacedDigit()
+                                        .foregroundStyle(.secondary)
+                                    if e.isGap {
+                                        Text("— κενό, πάτα για να συμπληρώσεις")
+                                            .foregroundStyle(.secondary)
+                                            .italic()
+                                    } else {
+                                        Circle()
+                                            .fill(categoryStore.color(for: e.category))
+                                            .frame(width: 8, height: 8)
+                                        VStack(alignment: .leading) {
+                                            Text("\(e.category) · \(e.subcategory)")
+                                            if let note = e.note, !note.isEmpty {
+                                                Text(note)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                        }
+                                    }
+                                    Spacer()
+                                }
                             }
+                            .buttonStyle(.plain)
                         }
                         .onDelete { offsets in
-                            offsets.map { today[$0].id }.forEach(store.delete)
+                            offsets.map { dayEntries[$0].id }.forEach(store.delete)
                         }
                     }
                 }
             }
             .navigationTitle("Σήμερα")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showingNewEntry = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(item: Binding(get: {
+                editingID.flatMap { id in dayEntries.first { $0.id == id } }
+            }, set: { _ in editingID = nil })) { entry in
+                EditEntryView(existingID: entry.id,
+                             date: entry.date,
+                             category: entry.category,
+                             subcategory: entry.subcategory,
+                             note: entry.note ?? "")
+            }
+            .sheet(isPresented: $showingNewEntry) {
+                EditEntryView(date: selectedDay)
+            }
         }
     }
 }
