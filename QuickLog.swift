@@ -27,6 +27,8 @@ struct QuickLogSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var chosenCategory: Category?
+    @State private var customText = ""
+    @State private var showCustom = false
 
     private var currentCategory: Category? {
         if let chosenCategory { return chosenCategory }
@@ -55,6 +57,20 @@ struct QuickLogSheet: View {
                                 }
                             }
                         }
+                        Section {
+                            if showCustom {
+                                HStack {
+                                    TextField("Τι κάνεις;", text: $customText)
+                                    Button("OK") {
+                                        let t = customText.trimmingCharacters(in: .whitespacesAndNewlines)
+                                        guard !t.isEmpty else { return }
+                                        log(category: cat.name, sub: t)
+                                    }
+                                }
+                            } else {
+                                Button("✏️ Κάτι άλλο...") { showCustom = true }
+                            }
+                        }
                     }
                     .navigationTitle(cat.name)
                     .toolbar {
@@ -70,9 +86,12 @@ struct QuickLogSheet: View {
                             Button {
                                 chosenCategory = cat
                             } label: {
-                                Label(cat.name, systemImage: cat.icon)
-                                    .font(.title3)
-                                    .padding(.vertical, 8)
+                                HStack {
+                                    Circle().fill(cat.color).frame(width: 10, height: 10)
+                                    Label(cat.name, systemImage: cat.icon)
+                                        .font(.title3)
+                                }
+                                .padding(.vertical, 8)
                             }
                         }
                     }
@@ -94,6 +113,8 @@ struct QuickLogSheet: View {
             await store.add(category: category, subcategory: sub)
             chosenCategory = nil
             quickLog.pendingCategoryID = nil
+            showCustom = false
+            customText = ""
             dismiss()
         }
     }
