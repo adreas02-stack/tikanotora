@@ -18,6 +18,8 @@
 		BBBBBBBBBBBBBBBBBBBBBB03 /* RadarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB13 /* RadarChartView.swift */; };
 		BBBBBBBBBBBBBBBBBBBBBB04 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB14 /* StatsView.swift */; };
 		BBBBBBBBBBBBBBBBBBBBBB05 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB15 /* PDFExporter.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB06 /* EditEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB16 /* EditEntryView.swift */; };
+		BBBBBBBBBBBBBBBBBBBBBB07 /* DayTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBBBBBBBBBBBBBBBBBBBB17 /* DayTimelineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		BBBBBBBBBBBBBBBBBBBBBB13 /* RadarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarChartView.swift; sourceTree = "<group>"; };
 		BBBBBBBBBBBBBBBBBBBBBB14 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		BBBBBBBBBBBBBBBBBBBBBB15 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB16 /* EditEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEntryView.swift; sourceTree = "<group>"; };
+		BBBBBBBBBBBBBBBBBBBBBB17 /* DayTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTimelineView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +57,8 @@
 				AAAAAAAAAAAAAAAAAAAAAA12 /* ContentView.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA13 /* Categories.swift */,
 				BBBBBBBBBBBBBBBBBBBBBB11 /* CategoriesManagementView.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB16 /* EditEntryView.swift */,
+				BBBBBBBBBBBBBBBBBBBBBB17 /* DayTimelineView.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA15 /* LogStore.swift */,
 				AAAAAAAAAAAAAAAAAAAAAA16 /* NotificationManager.swift */,
 				BBBBBBBBBBBBBBBBBBBBBB12 /* QuickLog.swift */,
@@ -144,6 +150,8 @@
 				AAAAAAAAAAAAAAAAAAAAAA02 /* ContentView.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA03 /* Categories.swift in Sources */,
 				BBBBBBBBBBBBBBBBBBBBBB01 /* CategoriesManagementView.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB06 /* EditEntryView.swift in Sources */,
+				BBBBBBBBBBBBBBBBBBBBBB07 /* DayTimelineView.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA05 /* LogStore.swift in Sources */,
 				AAAAAAAAAAAAAAAAAAAAAA06 /* NotificationManager.swift in Sources */,
 				BBBBBBBBBBBBBBBBBBBBBB02 /* QuickLog.swift in Sources */,
