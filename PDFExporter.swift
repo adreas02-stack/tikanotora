@@ -1,9 +1,9 @@
 import Foundation
 import UIKit
 
-/// Φτιάχνει PDF με όλες τις καταγραφές, ομαδοποιημένες ανά μέρα.
-/// Χρησιμοποιεί τη γραμματοσειρά του συστήματος, που δείχνει κανονικά
-/// τους ελληνικούς χαρακτήρες.
+/// Φτιάχνει PDF με όλες τις καταγραφές (χωρίς τα κενά), ομαδοποιημένες ανά
+/// μέρα, μαζί με τυχόν σημειώσεις. Χρησιμοποιεί τη γραμματοσειρά του
+/// συστήματος, που δείχνει κανονικά τους ελληνικούς χαρακτήρες.
 enum PDFExporter {
     static func export(_ entries: [LogEntry]) -> URL? {
         let pageWidth: CGFloat = 595.2   // A4 σε points
@@ -14,8 +14,9 @@ enum PDFExporter {
         let titleFont = UIFont.boldSystemFont(ofSize: 18)
         let headerFont = UIFont.boldSystemFont(ofSize: 13)
         let bodyFont = UIFont.systemFont(ofSize: 11)
+        let noteFont = UIFont.italicSystemFont(ofSize: 10)
 
-        let sorted = entries.sorted { $0.date < $1.date }
+        let sorted = entries.filter { !$0.isGap }.sorted { $0.date < $1.date }
         let groups = Dictionary(grouping: sorted) { Calendar.current.startOfDay(for: $0.date) }
         let days = groups.keys.sorted()
 
@@ -53,7 +54,7 @@ enum PDFExporter {
                     y += 20
 
                     for e in groups[day] ?? [] {
-                        if y > pageHeight - margin - 20 {
+                        if y > pageHeight - margin - 30 {
                             context.beginPage()
                             y = margin
                         }
@@ -61,6 +62,12 @@ enum PDFExporter {
                         (line as NSString)
                             .draw(at: CGPoint(x: margin + 8, y: y), withAttributes: [.font: bodyFont])
                         y += 16
+
+                        if let note = e.note, !note.isEmpty {
+                            ("— \(note)" as NSString)
+                                .draw(at: CGPoint(x: margin + 20, y: y), withAttributes: [.font: noteFont])
+                            y += 14
+                        }
                     }
                     y += 10
                 }
